@@ -1,5 +1,6 @@
 package com.terryx.algorithm.mis;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -17,5 +18,24 @@ public final class Utils {
             }
         }
         return s1;
+    }
+
+    public static boolean setSubset(Set<Integer> s1, Set<Integer> s2) {
+        for (int s : s1) {
+            if (!s2.contains(s)) return false;
+        }
+        return true;
+    }
+
+    public static Set<Integer> setCap(Set<Integer> s1, Set<Integer> s2) {
+        Set<Integer> set = new HashSet<>();
+        for (int a : s1) {
+            for (int b : s2) {
+                if (a == b) {
+                    set.add(a);
+                }
+            }
+        }
+        return set;
     }
 }

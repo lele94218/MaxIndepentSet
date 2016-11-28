@@ -119,4 +119,8 @@ public class Graph {
     public boolean edge(int v, int w) {
         return adj[v].contains(w);
     }
+
+    public boolean isDominate(int a, int b) {
+        return Utils.setSubset(barNeighbour(a), barNeighbour(b));
+    }
 }
