@@ -10,7 +10,7 @@ import static com.terryx.algorithm.mis.Utils.*;
 public class MaximumSet {
 
     public int ms(Graph G) {
-        System.out.println("ms:" + G.getVertices().size());
+//        System.out.println("ms:" + G.getVertices().size());
         if (G.getVertices().size() <= 1) return G.getVertices().size();
         Set<Integer> C = G.isConnected();
         if (!C.equals(G.getVertices())) {
@@ -63,7 +63,14 @@ public class MaximumSet {
      * @return size of an independent set of G
      */
     public int ms1(Graph G, Set<Integer> vs) {
-        System.out.println("ms1");
+//        System.out.println("ms1: " + G.getVertices().size());
+
+
+//        if (G.getVertices().size() == 12) {
+//            System.out.println(G.toString());
+//            int breakpoint = 10;
+//        }
+
         Iterator<Integer> it = vs.iterator();
         int s1 = it.next();
         int s2 = it.next();
@@ -87,7 +94,7 @@ public class MaximumSet {
                     ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s2))))) + 1;
         }
 
-        if (setCap(G.neighbour(s1), G.neighbour(s2)).size() == 0) {
+        if (setCap(G.neighbour(s1), G.neighbour(s2)).size() > 0) {
             return ms1(G.subGraph(setSubtract(G.getVertices(), setCap(G.neighbour(s1), G.neighbour(s2)))), vs);
         }
 
@@ -120,7 +127,7 @@ public class MaximumSet {
      * @return the maximum size of IS.
      */
     public int ms2(Graph G, Set<Integer> vs) {
-        System.out.println("ms2");
+//        System.out.println("ms2");
         List<Integer> list = new ArrayList<>(vs);
 
         if (vs.size() <= 1) return 0;
@@ -191,10 +198,12 @@ public class MaximumSet {
                             }
                         }
                     }
-                    Set<Integer> set = setCap(G.neighbour(_s[i]), G.neighbour(_s[j]));
-                    if (set.size() > 0) {
-                        int v = set.iterator().next();
-                        return ms2(G.subGraph(setSubtract(G.getVertices(), v)), vs);
+                    if (i != j) {
+                        Set<Integer> set = setCap(G.neighbour(_s[i]), G.neighbour(_s[j]));
+                        if (set.size() > 0) {
+                            int v = set.iterator().next();
+                            return ms2(G.subGraph(setSubtract(G.getVertices(), v)), setSubtract(vs, v));
+                        }
                     }
                 }
             }

@@ -1,13 +1,14 @@
 package com.terryx.algorithm.mis;
 
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 /**
  * @author taoranxue on 11/27/16 4:51 PM.
  */
-public class Graph {
+public class Graph implements Serializable {
+    private long serialVersionUID = -409295718270442039L;
     private int V;
     private int E;
     private boolean[] visit;
@@ -39,6 +40,7 @@ public class Graph {
     }
 
     public void addEdge(int v, int w) {
+        if (v == w) return;
         E++;
         adj[v].add(w);
         adj[w].add(v);
@@ -142,5 +144,24 @@ public class Graph {
             if (degree(v) <= d) return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        for (int v : getVertices()) {
+            str += String.format("%d ", v);
+        }
+        str += "\n";
+        for (int v : getVertices()) {
+            for (int w : adj[v]) {
+                if (v < w) {
+                    String tmp = String.format("%d/%d,", v, w);
+                    str += tmp;
+                }
+            }
+        }
+        str += "\n";
+        return str;
     }
 }
