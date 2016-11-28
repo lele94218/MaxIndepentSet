@@ -20,6 +20,13 @@ public final class Utils {
         return s1;
     }
 
+    public static Set<Integer> setAdd(Set<Integer> s1, Set<Integer> s2) {
+        Set<Integer> set = new HashSet<>();
+        set.addAll(s1);
+        set.addAll(s2);
+        return set;
+    }
+
     public static boolean setSubset(Set<Integer> s1, Set<Integer> s2) {
         for (int s : s1) {
             if (!s2.contains(s)) return false;
