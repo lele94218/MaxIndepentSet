@@ -29,8 +29,7 @@ public class MaximumSet {
         }
 
         if (G.degree(A) == 2) {
-            Set<Integer> set = G.neighbour(A);
-            set.remove(B);
+            Set<Integer> set = setSubtract(G.neighbour(A), B);
             int _B = set.iterator().next();
 
             if (G.edge(B, _B)) {
@@ -44,21 +43,15 @@ public class MaximumSet {
         }
 
         if (G.degree(A) == 3) {
-            Set<Integer> set = G.getVertices();
-            set.remove(A);
-            return Math.max(ms2(G.subGraph(set), G.neighbour(A)), 1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(A)))));
+            return Math.max(ms2(G.subGraph(setSubtract(G.getVertices(), A)), G.neighbour(A)), 1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(A)))));
         }
 
         if (G.isDominate(A, B)) {
-            Set<Integer> set = G.getVertices();
-            set.remove(B);
-            return ms(G.subGraph(set));
+            return ms(G.subGraph(setSubtract(G.getVertices(), B)));
         }
 
 
-        Set<Integer> set = G.getVertices();
-        set.remove(B);
-        return Math.max(ms(G.subGraph(set)), 1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(B)))));
+        return Math.max(ms(G.subGraph(setSubtract(G.getVertices(), B))), 1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(B)))));
 
     }
 
@@ -111,16 +104,14 @@ public class MaximumSet {
                 return 1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1))));
             }
             Set<Integer> addSet = setAdd(G.neighbour(E), G.neighbour(F));
-            addSet.remove(s1);
-            if (setSubset(addSet, G.neighbour(s2))) {
+            if (setSubset(setSubtract(addSet, s1), G.neighbour(s2))) {
                 return 3 + ms(G.subGraph(setSubtract(setSubtract(G.getVertices(), G.barNeighbour(s1)), G.barNeighbour(s2))));
             }
             return Math.max(1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1)))),
                     3 + ms(G.subGraph(setSubtract(setSubtract(setSubtract(G.getVertices(), G.barNeighbour(E)), G.barNeighbour(F)), G.barNeighbour(s2)))));
         }
         Set<Integer> set = setSubtract(G.getVertices(), G.barNeighbour(s1));
-        set.remove(s2);
-        return 1 + Math.max(ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s2)))), ms2(G.subGraph(set), G.neighbour(s2)));
+        return 1 + Math.max(ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s2)))), ms2(G.subGraph(setSubtract(set, s2)), G.neighbour(s2)));
     }
 
     /**
@@ -136,9 +127,104 @@ public class MaximumSet {
 
         if (vs.size() <= 1) return 0;
         if (vs.size() == 2) {
-            if (G.edge(s1,
+            Iterator<Integer> it = vs.iterator();
+            int s1 = it.next();
+            int s2 = it.next();
+            if (G.degree(s1) > G.degree(s2)) {
+                int tmp = s1;
+                s1 = s2;
+                s2 = tmp;
+            }
+
+            if (G.edge(s1, s2)) {
+                return 0;
+            }
+
+            return 2 + ms(G.subGraph(setSubtract(setSubtract(G.getVertices(), G.barNeighbour(s1)), G.barNeighbour(s2))));
         }
-        return -1;
+        if (vs.size() == 3) {
+            Iterator<Integer> it = vs.iterator();
+
+            int s1 = it.next();
+            int s2 = it.next();
+            int s3 = it.next();
+
+            if (G.degree(s1) > G.degree(s2)) {
+                int tmp = s1;
+                s1 = s2;
+                s2 = tmp;
+            }
+
+            if (G.degree(s2) > G.degree(s3)) {
+                int tmp = s2;
+                s2 = s3;
+                s3 = tmp;
+            }
+
+            if (G.degree(s1) > G.degree(s2)) {
+                int tmp = s1;
+                s1 = s2;
+                s2 = tmp;
+            }
+
+            if (G.degree(s1) == 0) {
+                return 1 + ms1(G.subGraph(setSubtract(G.getVertices(), s1)), setSubtract(vs, s1));
+            }
+
+            if (G.edge(s1, s2) && G.edge(s2, s3) && G.edge(s3, s1)) {
+                return 0;
+            }
+
+            int _s[] = new int[]{s1, s2, s3};
+
+            for (int i = 0; i < _s.length; ++i) {
+                for (int j = 0; j < _s.length; ++j) {
+                    for (int k = 0; k < _s.length; ++k) {
+                        if (i != j && j != k && k != i) {
+                            if (G.edge(_s[i], _s[j]) && G.edge(_s[i], _s[k])) {
+                                return 2 + ms(G.subGraph(setSubtract(setSubtract(G.getVertices(), G.barNeighbour(_s[j])), G.barNeighbour(_s[k]))));
+                            }
+
+                            if (G.edge(_s[i], _s[j])) {
+                                Set<Integer> set = new HashSet<>();
+                                set.add(_s[i]);
+                                set.add(_s[j]);
+                                return 1 + ms1(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(_s[k]))), set);
+                            }
+                        }
+                    }
+                    Set<Integer> set = setCap(G.neighbour(_s[i]), G.neighbour(_s[j]));
+                    if (set.size() > 0) {
+                        int v = set.iterator().next();
+                        return ms2(G.subGraph(setSubtract(G.getVertices(), v)), vs);
+                    }
+                }
+            }
+
+            if (G.degree(s1) == 1) {
+                return 1 + ms1(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1))), setSubtract(vs, s1));
+            }
+
+            return Math.max(1 + ms1(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1))), setSubtract(vs, s1)),
+                    ms2(G.subGraph(setSubtract(setSubtract(setSubtract(G.getVertices(), G.barNeighbour(s2)), G.barNeighbour(s3)), s1)), G.neighbour(s1)));
+        }
+
+        if (vs.size() == 4) {
+            int _d = Integer.MAX_VALUE;
+            int s1 = 0;
+            for (int s : vs) {
+                if (G.degree(s) < _d) {
+                    _d = G.degree(s);
+                    s1 = s;
+                }
+            }
+            if (G.hasDegreeLess(3)) {
+                return ms(G);
+            }
+
+            return Math.max(1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1)))), ms2(G.subGraph(setSubtract(G.getVertices(), s1)), setSubtract(vs, s1)));
+        }
+        return ms(G);
     }
 
     public static void main(String args[]) {

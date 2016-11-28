@@ -12,12 +12,19 @@ public final class Utils {
     }
 
     public static Set<Integer> setSubtract(Set<Integer> s1, Set<Integer> s2) {
+        Set<Integer> set = new HashSet<>(s1);
         for (Integer v : s2) {
-            if (s1.contains(v)) {
-                s1.remove(v);
+            if (set.contains(v)) {
+                set.remove(v);
             }
         }
-        return s1;
+        return set;
+    }
+
+    public static Set<Integer> setSubtract(Set<Integer> s1, Integer s2) {
+        Set<Integer> set = new HashSet<>(s1);
+        set.remove(s2);
+        return set;
     }
 
     public static Set<Integer> setAdd(Set<Integer> s1, Set<Integer> s2) {

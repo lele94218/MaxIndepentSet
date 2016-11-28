@@ -123,4 +123,11 @@ public class Graph {
     public boolean isDominate(int a, int b) {
         return Utils.setSubset(barNeighbour(a), barNeighbour(b));
     }
+
+    public boolean hasDegreeLess(int d) {
+        for (int v : vertices) {
+            if (degree(v) <= d) return true;
+        }
+        return false;
+    }
 }
