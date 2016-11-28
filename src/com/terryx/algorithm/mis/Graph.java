@@ -12,20 +12,30 @@ public class Graph {
     private int E;
     private boolean[] visit;
     private Set<Integer> vertices;
-    private LinkedList<Integer>[] adj;
+    private Set<Integer>[] adj;
 
     public Graph(int V) {
         this.V = V;
         this.E = 0;
-        adj = (LinkedList<Integer>[]) new LinkedList[V];
+        this.visit = new boolean[V];
+        this.vertices = new HashSet<>();
+        this.adj = new HashSet[V];
+        for (int i = 0; i < V; ++i) vertices.add(i);
+        adj = (HashSet<Integer>[]) new HashSet[V];
         for (int v = 0; v < V; v++) {
-            adj[v] = new LinkedList<>();
+            adj[v] = new HashSet<>();
         }
     }
 
-    public Graph(int V, Set<Integer> vs) {
-        this(V);
+    private Graph(int V, Set<Integer> vs) {
+        this.V = V;
+        this.E = 0;
+        this.visit = new boolean[V];
         this.vertices = vs;
+        this.adj = new HashSet[V];
+        for (int v = 0; v < V; v++) {
+            adj[v] = new HashSet<>();
+        }
     }
 
     public void addEdge(int v, int w) {
@@ -43,7 +53,8 @@ public class Graph {
         for (int v = 0; v < V; ++v) {
             if (vs.contains(v)) {
                 for (Integer w : adj[v]) {
-                    graph.addEdge(v, w);
+                    if (vs.contains(w))
+                        graph.addEdge(v, w);
                 }
             }
         }
@@ -107,6 +118,8 @@ public class Graph {
         for (int w : _set) {
             set.addAll(neighbour(w));
         }
+        set.remove(v);
+        set.removeAll(_set);
         return set;
     }
 

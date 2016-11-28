@@ -8,14 +8,10 @@ import static com.terryx.algorithm.mis.Utils.*;
  * @author taoranxue on 11/27/16 4:45 PM.
  */
 public class MaximumSet {
-    private Graph G;
-
-    public MaximumSet(Graph G) {
-        this.G = G;
-    }
 
     public int ms(Graph G) {
-        if (G.getVertices().size() <= 1) return 1;
+        System.out.println("ms:" + G.getVertices().size());
+        if (G.getVertices().size() <= 1) return G.getVertices().size();
         Set<Integer> C = G.isConnected();
         if (!C.equals(G.getVertices())) {
             return ms(G.subGraph(setSubtract(G.getVertices(), C))) + ms(G.subGraph(C));
@@ -67,6 +63,7 @@ public class MaximumSet {
      * @return size of an independent set of G
      */
     public int ms1(Graph G, Set<Integer> vs) {
+        System.out.println("ms1");
         Iterator<Integer> it = vs.iterator();
         int s1 = it.next();
         int s2 = it.next();
@@ -123,6 +120,7 @@ public class MaximumSet {
      * @return the maximum size of IS.
      */
     public int ms2(Graph G, Set<Integer> vs) {
+        System.out.println("ms2");
         List<Integer> list = new ArrayList<>(vs);
 
         if (vs.size() <= 1) return 0;
@@ -225,12 +223,5 @@ public class MaximumSet {
             return Math.max(1 + ms(G.subGraph(setSubtract(G.getVertices(), G.barNeighbour(s1)))), ms2(G.subGraph(setSubtract(G.getVertices(), s1)), setSubtract(vs, s1)));
         }
         return ms(G);
-    }
-
-    public static void main(String args[]) {
-        Set<Integer> set = new HashSet<>();
-        set.add(1);
-        set.add(4);
-        System.out.println(set.iterator().next());
     }
 }
