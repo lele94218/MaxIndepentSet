@@ -29,8 +29,8 @@ public class Main {
 //        G.addEdge(0, 5);
 //        G.addEdge(3, 5);
 //        G.addEdge(7, 8);
-
-       Graph G = RandomData.generateGraph(30);
+//
+//       Graph G = RandomData.generateGraph(30);
 
 //        try {
 //            ObjectOutputStream os = new ObjectOutputStream(
@@ -53,8 +53,21 @@ public class Main {
 //        }
 
         MaximumSet maximumSet = new MaximumSet();
-        System.out.println(maximumSet.ms(G));
-        MaximumSetBruteForce maximumSetBruteForce = new MaximumSetBruteForce(G);
-        System.out.println(maximumSetBruteForce.ms());
+        int t = 1;
+        while (t-- > 0) {
+            Graph G = RandomData.generateGraph(110);
+            long t1 = System.currentTimeMillis();
+            int res = maximumSet.ms(G);
+            long t2 = System.currentTimeMillis();
+            System.out.println(t2 - t1);
+//
+//            MaximumSetBruteForce maximumSetBruteForce = new MaximumSetBruteForce(G);
+//            t1 = System.currentTimeMillis();
+//            res = maximumSetBruteForce.ms();
+//            t2 = System.currentTimeMillis();
+//            System.out.println(t2 - t1);
+
+        }
+
     }
 }
